@@ -137,8 +137,9 @@ set (LIBCMAES_VERSION_STRING ${LIBCMAES_MAJOR_VERSION}.${LIBCMAES_MINOR_VERSION}
 
 
 
-configure_file (libcmaes_config.h.cmake.in libcmaes_config.h)
-install (FILES ${PROJECT_BINARY_DIR}/libcmaes_config.h DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
+configure_file (include/libcmaes/libcmaes_config.h.cmake.in include/libcmaes/libcmaes_config.h)
+install (FILES ${PROJECT_BINARY_DIR}/include/libcmaes/libcmaes_config.h
+  DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
 if (NOT MSVC)

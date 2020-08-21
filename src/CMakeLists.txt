@@ -14,17 +14,44 @@ errstats.cc
 ipopcmastrategy.cc
 surrogatestrategy.cc)
 
-set (LIBCMAES_HEADERS cmaes.h opti_err.h eo_matrix.h cmastrategy.h esoptimizer.h esostrategy.h cmasolutions.h parameters.h cmaparameters.h cmastopcriteria.h ipopcmastrategy.h bipopcmastrategy.h covarianceupdate.h acovarianceupdate.h vdcmaupdate.h pwq_bound_strategy.h eigenmvn.h candidate.h genopheno.h noboundstrategy.h scaling.h llogging.h errstats.h pli.h contour.h)
+set(header_path "${CMAKE_SOURCE_DIR}/include/libcmaes")
+set (LIBCMAES_HEADERS
+  ${header_path}/cmaes.h
+  ${header_path}/opti_err.h
+  ${header_path}/eo_matrix.h
+  ${header_path}/cmastrategy.h
+  ${header_path}/esoptimizer.h
+  ${header_path}/esostrategy.h
+  ${header_path}/cmasolutions.h
+  ${header_path}/parameters.h
+  ${header_path}/cmaparameters.h
+  ${header_path}/cmastopcriteria.h
+  ${header_path}/ipopcmastrategy.h
+  ${header_path}/bipopcmastrategy.h
+  ${header_path}/covarianceupdate.h
+  ${header_path}/acovarianceupdate.h
+  ${header_path}/vdcmaupdate.h
+  ${header_path}/pwq_bound_strategy.h
+  ${header_path}/eigenmvn.h
+  ${header_path}/candidate.h
+  ${header_path}/genopheno.h
+  ${header_path}/noboundstrategy.h
+  ${header_path}/scaling.h
+  ${header_path}/llogging.h
+  ${header_path}/errstats.h
+  ${header_path}/pli.h
+  ${header_path}/contour.h)
 
 if (ENABLE_SURROG)
   list (APPEND LIBCMAES_SOURCES surrogatestrategy.cc)
-  list (APPEND LIBCMAES_HEADERS surrcmaes.h surrogatestrategy.h)
+  list (APPEND LIBCMAES_HEADERS ${header_path}/surrcmaes.h ${header_path}/surrogatestrategy.h)
 endif ()
 
 include_directories (${CMAKE_CURRENT_SOURCE_DIR})
 include_directories (${CMAKE_CURRENT_BINARY_DIR})
 
-add_library (cmaes ${LIBCMAES_SOURCES})
+add_library (cmaes ${LIBCMAES_HEADERS} ${LIBCMAES_SOURCES})
+target_include_directories(cmaes PUBLIC ${CMAKE_SOURCE_DIR}/include ${CMAKE_BINARY_DIR}/include)
 
 
 if(MSVC)
@@ -55,5 +82,5 @@ install (FILES ${LIBCMAES_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/cmaes_export.h
          DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
 
 if (ENABLE_SURROG)
-  install (DIRECTORY surrogates DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
+  install (DIRECTORY ${header_path}/surrogates DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
 endif ()
