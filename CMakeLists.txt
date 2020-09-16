@@ -143,6 +143,10 @@ if 'real_prefix' in dir(sys):
   endif ()
 endif ()
 
+configure_file (include/libcmaes/libcmaes_config.h.cmake.in include/libcmaes/libcmaes_config.h)
+install (FILES ${PROJECT_BINARY_DIR}/include/libcmaes/libcmaes_config.h
+  DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
+
 if (NOT MSVC)
   set (prefix ${CMAKE_INSTALL_PREFIX})
   set (exec_prefix ${prefix})
