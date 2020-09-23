@@ -1,5 +1,3 @@
-set (HAVE_SURROG ${LIBCMAES_ENABLE_SURROG})
-
 set (
   LIBCMAES_SOURCES
   acovarianceupdate.cc
@@ -13,8 +11,7 @@ set (
   cmasolutions.cc
   cmastrategy.cc
   errstats.cc
-  ipopcmastrategy.cc
-  surrogatestrategy.cc)
+  ipopcmastrategy.cc)
 
 set(header_path "${CMAKE_SOURCE_DIR}/include/libcmaes")
 set (LIBCMAES_HEADERS
@@ -94,7 +91,8 @@ install (
   ARCHIVE DESTINATION ${RELATIVE_INSTALL_LIB_DIR}
   INCLUDES DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR})
 
-install (FILES ${LIBCMAES_HEADERS} ${CMAKE_CURRENT_BINARY_DIR}/cmaes_export.h
+
+install (FILES ${LIBCMAES_HEADERS}  ${CMAKE_BINARY_DIR}/include/libcmaes/cmaes_export.h
          DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
 
 if (LIBCMAES_ENABLE_SURROG)

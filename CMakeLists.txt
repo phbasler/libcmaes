@@ -143,6 +143,7 @@ if 'real_prefix' in dir(sys):
   endif ()
 endif ()
 
+set (HAVE_SURROG ${LIBCMAES_ENABLE_SURROG})
 configure_file (include/libcmaes/libcmaes_config.h.cmake.in include/libcmaes/libcmaes_config.h)
 install (FILES ${PROJECT_BINARY_DIR}/include/libcmaes/libcmaes_config.h
   DESTINATION ${RELATIVE_INSTALL_INCLUDE_DIR}/libcmaes)
