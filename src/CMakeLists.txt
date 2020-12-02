@@ -13,7 +13,7 @@ set (
   errstats.cc
   ipopcmastrategy.cc)
 
-set(header_path "${CMAKE_SOURCE_DIR}/include/libcmaes")
+set(header_path "${PROJECT_SOURCE_DIR}/include/libcmaes")
 set (LIBCMAES_HEADERS
   ${header_path}/cmaes.h
   ${header_path}/opti_err.h
@@ -47,17 +47,14 @@ if (LIBCMAES_ENABLE_SURROG)
 endif ()
 
 if (LIBCMAES_BUILD_SHARED_LIBS)
-  add_library (cmaes SHARED ${LIBCMAES_HEADERS} ${LIBCMAES_SOURCES})
+  add_library (cmaes SHARED ${LIBCMAES_SOURCES})
 else ()
-  add_library (cmaes STATIC ${LIBCMAES_HEADERS} ${LIBCMAES_SOURCES})
+  add_library (cmaes STATIC ${LIBCMAES_SOURCES})
 endif ()
 
 target_include_directories (
-  cmaes PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-               $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
-               $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include>
-               $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+  cmaes PUBLIC $<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>
+               $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
   )
 target_link_libraries (cmaes PUBLIC Eigen3::Eigen)
 if (LIBCMAES_USE_OPENMP)
