@@ -23,6 +23,8 @@ jobs:
           persist-credentials: false
     - name : installPackages
       run : sudo apt-get update && sudo apt-get install --no-install-recommends --yes libeigen3-dev libboost-all-dev libgflags-dev
+    - name : install python packages
+      run: pip install numpy
     - name: Get number of CPU cores
       uses: SimenB/github-actions-cpu-cores@v1
       id: cpu-cores

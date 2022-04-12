@@ -22,7 +22,9 @@ jobs:
       with:
           persist-credentials: false
     - name : installPackages
-      run : brew install eigen boost libomp gflags
+      run : brew install eigen boost boost-python3 libomp gflags
+    - name : install python packages
+      run: pip install numpy
     - name: Get number of CPU cores
       uses: SimenB/github-actions-cpu-cores@v1
       id: cpu-cores
