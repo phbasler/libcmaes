@@ -22,7 +22,7 @@ jobs:
       with:
           persist-credentials: false
     - name : installPackages
-      run : brew install eigen nlopt boost libomp
+      run : brew install eigen boost libomp gflags
     - name: Get number of CPU cores
       uses: SimenB/github-actions-cpu-cores@v1
       id: cpu-cores
