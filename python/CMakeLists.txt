@@ -1,6 +1,6 @@
-Python3_add_library (lcmaes lcmaes.cc)
+Python3_add_library (lcmaes MODULE lcmaes.cc)
 
-target_link_libraries (lcmaes PUBLIC cmaes Python3::Module Python3::NumPy Boost::python)
+target_link_libraries (lcmaes PRIVATE cmaes Python3::Module Python3::NumPy Boost::python)
 
 if (APPLE)
   set_target_properties (lcmaes PROPERTIES LINK_FLAGS
@@ -9,7 +9,11 @@ endif ()
 
 install (TARGETS lcmaes DESTINATION ${PYTHON_SITE_PACKAGES})
 
-set (PYINSTALLCHECK_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}:${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}:$ENV{PYTHONPATH}")
+if(CMAKE_BUILD_TYPE STREQUAL "")
+set (PYINSTALLCHECK_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}")
+else()
+set (PYINSTALLCHECK_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
+endif()
 message(STATUS "Setting PYTHON to ${PYINSTALLCHECK_ENVIRONMENT}")
 
 if (LIBCMAES_BUILD_TESTS)
