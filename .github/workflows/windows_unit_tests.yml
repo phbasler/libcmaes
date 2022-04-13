@@ -67,7 +67,7 @@ jobs:
     - name: show src
       run: ls build/src/Release/*
     - name: Copy cmaes.dll to python folder
-      run: cp build/python/Release/cmaes.dll build/src/Release/cmaes.dll
+      run: cp build/src/Release/cmaes.dll build/python/Release/cmaes.dll
     - name: Test
       run: cd build && ctest -j${{ steps.cpu-cores.outputs.count }} --output-on-failure -C Release
 
