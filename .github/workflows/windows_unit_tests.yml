@@ -63,9 +63,9 @@ jobs:
     - name: show build
       run: ls build 
     - name: show python
-      run: ls build/python/*
+      run: ls build/python/Release/*
     - name: show src
-      run: ls build/src/*
+      run: ls build/src/Release/*
     - name: Copy cmaes.dll to python folder
       run: cp build/python/Release/cmaes.dll build/src/Release/cmaes.dll
     - name: Test
