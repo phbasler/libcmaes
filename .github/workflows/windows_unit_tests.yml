@@ -60,6 +60,12 @@ jobs:
       run: cmake -S . -B build -DLIBCMAES_BUILD_PYTHON=On -DLIBCMAES_BUILD_TESTS=On -DLIBCMAES_USE_OPENMP=On -DLIBCMAES_USE_CONAN=On -DCMAKE_BUILD_TYPE=Release
     - name: make
       run: cd build && cmake --build . -j${{ steps.cpu-cores.outputs.count }} --config Release
+    - name: show build
+      run: ls build 
+    - name: show python
+      run: ls build/python/*
+    - name: show src
+      run: ls build/src/*
     - name: Copy cmaes.dll to python folder
       run: cp build/python/Release/cmaes.dll build/src/Release/cmaes.dll
     - name: Test
