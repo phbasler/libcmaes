@@ -1,5 +1,10 @@
 Python3_add_library (lcmaes MODULE lcmaes.cc)
 
+if(MSVC)
+  add_custom_command(TARGET lcmaes POST_BUILD
+  COMMAND ${CMAKE_COMMAND} -E copy_if_different $<TARGET_FILE:cmaes> $<TARGET_FILE_DIR:lcmaes> )
+endif()
+
 target_link_libraries (lcmaes PRIVATE cmaes Python3::Module Python3::NumPy Boost::python)
 
 if (APPLE)
@@ -8,22 +13,10 @@ if (APPLE)
 endif ()
 
 install (TARGETS lcmaes DESTINATION ${PYTHON_SITE_PACKAGES})
+if(MSVC)
+install(TARGETS cmaes DESTINATION ${PYTHON_SITE_PACKAGES})
+endif()
 
-#set(PathSep ":")
-#if(WIN32)
-#  set(PathSep ";")
-#endif()
-
-#set (PYINSTALLCHECK_ENVIRONMENT
-#  "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}${PathSep}${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}"
-#  )
-
-#if(CMAKE_BUILD_TYPE STREQUAL "")
-#set (PYINSTALLCHECK_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}")
-#else()
-#set (PYINSTALLCHECK_ENVIRONMENT "PYTHONPATH=${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_BUILD_TYPE}")
-#endif()
-#message(STATUS "Setting PYTHON to ${PYINSTALLCHECK_ENVIRONMENT}")
 
 if (LIBCMAES_BUILD_TESTS)
   macro (cmaes_add_pytest name)
