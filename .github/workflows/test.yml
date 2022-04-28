@@ -1,12 +1,8 @@
-# SPDX-FileCopyrightText: 2021 Philipp Basler, Margarete Mühlleitner and Jonas Müller
-#
-# SPDX-License-Identifier: GPL-3.0-or-later
-
 name: Ubuntu unit tests
 
 on:
   push:
-    branches: [ conan, conan-windows ]
+    branches: [ master]
   pull_request:
     branches: [ master, develop ]
   workflow_dispatch:
@@ -30,9 +26,9 @@ jobs:
       id: cpu-cores
     - name: cmake
       run: mkdir build && cd build && cmake .. -DLIBCMAES_BUILD_PYTHON=On -DLIBCMAES_BUILD_TESTS=On -DLIBCMAES_USE_OPENMP=On
-    - name: make
+    - name: compile
       run: cd build && cmake --build . -j${{ steps.cpu-cores.outputs.count }}
-    - name: Test
+    - name: Run ctest
       run: cd build && ctest -j${{ steps.cpu-cores.outputs.count }} --output-on-failure
       
 
