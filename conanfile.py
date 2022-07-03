@@ -86,7 +86,7 @@ class libcmaesConan(ConanFile):
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure("LIBCMAES_BUILD_EXAMPLES",False)
+        cmake.configure()
         return cmake
         
 

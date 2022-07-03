@@ -4,7 +4,7 @@ project(PackageTest CXX)
 list (APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
 include(../cmake/conan.cmake)
-conan_cmake_configure(REQUIRES libcmaes/0.10.1-conanReci.d1db8118
+conan_cmake_configure(REQUIRES libcmaes/0.10.1-conanReci.94f60fce
                     GENERATORS cmake_find_package
                     )
 
