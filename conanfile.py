@@ -1,5 +1,7 @@
 from conans import ConanFile, CMake, tools
 from conans.tools import load
+from conan.tools.cmake import CMakeToolchain
+from conan.tools.layout import cmake_layout
 import re, os, functools
 
 class libcmaesConan(ConanFile):
@@ -10,6 +12,8 @@ class libcmaesConan(ConanFile):
     description = "libcmaes is a multithreaded C++11 library with Python bindings for high performance blackbox stochastic optimization using the CMA-ES algorithm for Covariance Matrix Adaptation Evolution Strategy"
     license = "MIT"
     settings = "os", "compiler", "build_type", "arch"
+
+    requires = "eigen/3.4.0"
     
     generators = "cmake"
 
@@ -21,9 +25,10 @@ class libcmaesConan(ConanFile):
     }
 
     def set_version(self):
-        def set_version(self):
         content = load(os.path.join(self.recipe_folder, "CMakeLists.txt"))
-        extracted_version  = re.search(r"set\(VERSION (.*)\)", content).group(1).strip()
+        value=re.search(r"set\(libcmaes_VERSION (.*)\)", content)
+        print(value)
+        extracted_version  = value.group(1).strip()
         
         git = tools.Git(folder=self.recipe_folder)
         if (git.get_tag() != None):
@@ -81,7 +86,7 @@ class libcmaesConan(ConanFile):
 
     def configure_cmake(self):
         cmake = CMake(self)
-        cmake.configure()
+        cmake.configure("LIBCMAES_BUILD_EXAMPLES",False)
         return cmake
         
 
@@ -94,4 +99,4 @@ class libcmaesConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["libcmaes::cmaes"]
+        self.cpp_info.components["cmaes"].libs = ["libcmaes"] 

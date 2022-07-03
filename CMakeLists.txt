@@ -1,7 +1,9 @@
 cmake_minimum_required (VERSION 3.15)
 
+set(libcmaes_VERSION 0.10.1)
+
 project (libcmaes
-  VERSION 0.10
+  VERSION ${libcmaes_VERSION}
   LANGUAGES C CXX
   DESCRIPTION "A C++11 library for stochastic optimization with CMA-ES")
 
@@ -213,9 +215,10 @@ endif ()
 add_library (libcmaes::cmaes ALIAS cmaes)
 
 include (CMakePackageConfigHelpers)
-write_basic_package_version_file (
-  libcmaesConfigVersion.cmake VERSION ${PACKAGE_VERSION}
-  COMPATIBILITY AnyNewerVersion)
+write_basic_package_version_file(
+    libcmaesConfigVersion.cmake
+    VERSION ${PACKAGE_VERSION}
+    COMPATIBILITY AnyNewerVersion)
 
 # export target to build directory
 export (TARGETS cmaes NAMESPACE libcmaes:: FILE libcmaesTargets.cmake)
