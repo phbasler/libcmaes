@@ -1,18 +1,43 @@
-from conans import ConanFile
-from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
+from conans import ConanFile, CMake, tools
+from conans.tools import load
+import re, os, functools
 
 class libcmaesConan(ConanFile):
     name = "libcmaes"
     homepage = "https://github.com/CMA-ES/libcmaes"
+    short_paths = True
     url = "https://github.com/CMA-ES/libcmaes"
     description = "libcmaes is a multithreaded C++11 library with Python bindings for high performance blackbox stochastic optimization using the CMA-ES algorithm for Covariance Matrix Adaptation Evolution Strategy"
     license = "MIT"
+    settings = "os", "compiler", "build_type", "arch"
+    
+    generators = "cmake"
+
+    scm = {
+        'type': 'git',
+        'url': 'auto',
+        'revision': 'auto',
+        'verify_ssl': False
+    }
 
     def set_version(self):
-        self.version = "0.10"
+        def set_version(self):
+        content = load(os.path.join(self.recipe_folder, "CMakeLists.txt"))
+        extracted_version  = re.search(r"set\(VERSION (.*)\)", content).group(1).strip()
+        
+        git = tools.Git(folder=self.recipe_folder)
+        if (git.get_tag() != None):
+            # depending on your workflow you could also
+            # set a non-beta version when on main branch or
+            # on a certain release branch
+            self.version = extracted_version
+        else:
+            # if not tag -> pre-release version
+            commit_hash = git.get_commit()[:8]
+            branch_name = git.get_branch()[:9]
+            self.version = f"{extracted_version}-{branch_name}.{commit_hash}"
 
     # Binary configuration
-    settings = "os", "compiler", "build_type", "arch"
     options = {
         "shared": [True, False], 
         "openmp": [True, False],
@@ -64,18 +89,9 @@ class libcmaesConan(ConanFile):
         cmake = self.configure_cmake()
         cmake.build()
 
-    def package(self):
-        self.copy("*.h", dst="include", src="src")
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.dylib*", dst="lib", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
-        
+    def package(self):        
         cmake = CMake(self)
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.set_property("cmake_file_name", "libcmaes")
-        self.cpp_info.set_property("cmake_target_name", "libcmaes::cmaes")
-        self.cpp_info.set_property("pkg_config_name", "libcmaes")
+        self.cpp_info.libs = ["libcmaes::cmaes"]
