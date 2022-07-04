@@ -4,6 +4,8 @@ from conan.tools.cmake import CMakeToolchain
 from conan.tools.layout import cmake_layout
 import re, os, functools
 
+required_conan_version = ">=1.43.0"
+
 class libcmaesConan(ConanFile):
     name = "libcmaes"
     homepage = "https://github.com/CMA-ES/libcmaes"
@@ -57,13 +59,14 @@ class libcmaesConan(ConanFile):
     # Sources are located in the same place as this recipe, copy them to the recipe
     #exports_sources = ["../*"]
     def export_sources(self):
-        self.output.info("Executing export_sources() method")
-        self.copy("*", src="../src", dst="src")
-        self.copy("CMakeLists.txt", src="../")
-        self.copy("*", src="../include", dst="include")
-        self.copy("*", src="../cmake", dst="cmake")
-        self.copy("libcmaesConfig.cmake.in", src="../")
-        self.copy("libcmaes.pc.in", src="../")
+        pass
+        #self.output.info("Executing export_sources() method")
+        #self.copy("*", src="../src", dst="src")
+        #self.copy("CMakeLists.txt", src="../")
+        #self.copy("*", src="../include", dst="include")
+        #self.copy("*", src="../cmake", dst="cmake")
+        #self.copy("libcmaesConfig.cmake.in", src="../")
+        #self.copy("libcmaes.pc.in", src="../")
 
     def config_options(self):
         pass
@@ -84,8 +87,13 @@ class libcmaesConan(ConanFile):
         tc.variables['LIBCMAES_ENABLE_SURROG'] = self.options.surrog
         tc.generate()
 
+
     def configure_cmake(self):
         cmake = CMake(self)
+        cmake.definitions['LIBCMAES_BUILD_EXAMPLES']="OFF"
+        cmake.definitions['LIBCMAES_BUILD_SHARED_LIBS']= ( "ON" if self.options.shared else "OFF" )
+        cmake.definitions['LIBCMAES_USE_OPENMP']= ( "ON" if self.options.openmp else "OFF" )
+        cmake.definitions['LIBCMAES_ENABLE_SURROG']= ( "ON" if self.options.surrog else "OFF" )
         cmake.configure()
         return cmake
         
@@ -95,8 +103,11 @@ class libcmaesConan(ConanFile):
         cmake.build()
 
     def package(self):        
-        cmake = CMake(self)
+        cmake = self.configure_cmake()
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.components["cmaes"].libs = ["libcmaes"] 
+        self.cpp_info.names["cmake_find_package"] = "libcmaes"
+        self.cpp_info.names["cmake_find_package_multi"] = "libcmaes"
+        self.cpp_info.components["cmaes"].libs = ["libcmaes"]
+        self.cpp_info.components["cmaes"].includedirs = ["include"]
