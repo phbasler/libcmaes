@@ -1,8 +1,11 @@
-from conans import ConanFile, CMake, tools
-from conans.tools import load
-from conan.tools.cmake import CMakeToolchain
-from conan.tools.layout import cmake_layout
 import re, os, functools
+from conans import tools
+from conans.tools import load
+
+from conan import ConanFile
+from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
+
+
 
 required_conan_version = ">=1.43.0"
 
@@ -17,8 +20,12 @@ class libcmaesConan(ConanFile):
 
     requires = "eigen/3.4.0"
     
-    generators = "CMakeToolchain"
-    #generators = "cmake"
+    generators = "CMakeDeps", "CMakeToolchain", "VirtualBuildEnv", "VirtualRunEnv"
+    apply_env = False
+    test_type = "explicit"
+
+    def requirements(self):
+        self.requires(self.tested_reference_str)
 
     scm = {
         'type': 'git',
@@ -60,13 +67,6 @@ class libcmaesConan(ConanFile):
     # Sources are located in the same place as this recipe, copy them to the recipe
     def export_sources(self):
         pass
-        #self.output.info("Executing export_sources() method")
-        # self.copy("*", src="src", dst="src")
-        # self.copy("CMakeLists.txt", src="../")
-        # self.copy("*", src="include", dst="include")
-        # self.copy("*", src="cmake", dst="cmake")
-        # self.copy("libcmaesConfig.cmake.in", src=".")
-        # self.copy("libcmaes.pc.in", src=".")
 
     def config_options(self):
         pass
@@ -82,30 +82,21 @@ class libcmaesConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables['LIBCMAES_BUILD_EXAMPLES']=False
-        tc.variables['LIBCMAES_BUILD_SHARED_LIBS'] = self.options.shared
+        tc.variables['LIBCMAES_BUILD_SHARED_LIBS']= self.options.shared
         tc.variables['LIBCMAES_USE_OPENMP'] = self.options.openmp
         tc.variables['LIBCMAES_ENABLE_SURROG'] = self.options.surrog
         tc.generate()
-
-
-    def configure_cmake(self):
-        cmake = CMake(self)
-        cmake.definitions['LIBCMAES_BUILD_EXAMPLES']=False
-        cmake.definitions['LIBCMAES_BUILD_SHARED_LIBS']= self.options.shared
-        cmake.definitions['LIBCMAES_USE_OPENMP']= self.options.openmp
-        cmake.definitions['LIBCMAES_ENABLE_SURROG']= self.options.surrog
-        cmake.configure()
-        return cmake
         
 
     def build(self):
-        cmake = self.configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
-    def package(self):        
-        cmake = self.configure_cmake()
-        #cmake = CMake(self)
+    def package(self):    
+        cmake = CMake(self)
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["libcmaes"]
+        #self.cpp_info.libs = ["libcmaes"]
+        self.cpp_info.components["cmaes"].libs = ["libcmaes"]
