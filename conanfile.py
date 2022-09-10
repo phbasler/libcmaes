@@ -11,10 +11,10 @@ class CmaesConan(ConanFile):
     generators = "CMakeDeps", "CMakeToolchain"
 
     # Optional metadata
-    license = "<Put the package license here>"
+    license = "MIT"
     author = "<Put your name here> <And your email here>"
-    url = "<Package recipe repository url here, for issues about the package>"
-    description = "<Description of Cmaes here>"
+    url = "https://github.com/CMA-ES/libcmaes"
+    description = "libcmaes is a multithreaded C++11 library with Python bindings for high performance blackbox stochastic optimization using the CMA-ES algorithm for Covariance Matrix Adaptation Evolution Strategy"
     topics = ("<Put some tag here>", "<here>", "<and here>")
 
     # Binary configuration
@@ -35,11 +35,10 @@ class CmaesConan(ConanFile):
 
     def build_requirements(self):
         pass
-      #  if self.options.openmp:
-      #      self.build_requires("llvm-openmp/12.0.1")
 
     def requirements(self):
         self.requires("eigen/3.4.0")
+        
 
     def set_version(self):
         content = load(os.path.join(self.recipe_folder, "CMakeLists.txt"))
@@ -60,8 +59,7 @@ class CmaesConan(ConanFile):
             self.version = f"{extracted_version}-{branch_name}.{commit_hash}"
 
     def config_options(self):
-        if self.settings.os == "Windows":
-            del self.options.fPIC
+        pass
 
     def layout(self):
         cmake_layout(self)
@@ -84,5 +82,6 @@ class CmaesConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.components["cmaes"].libs = ["cmaes"]
-        self.cpp_info.components["cmaes"].requires = ["eigen::eigen"]
+        self.cpp_info.libs = ["cmaes"]
+        self.cpp_info.set_property("cmake_target_aliases",["libcmaes::cmaes"])
+        self.cpp_info.requires = ["eigen::eigen"]
