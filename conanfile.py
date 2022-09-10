@@ -1,38 +1,30 @@
 import re, os, functools
-from conans import tools
-from conans.tools import load
 
+from conans import tools as tools
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout
+from conans.tools import load
 
-
-
-required_conan_version = ">=1.43.0"
-
-class libcmaesConan(ConanFile):
+class CmaesConan(ConanFile):
     name = "libcmaes"
-    homepage = "https://github.com/CMA-ES/libcmaes"
-    short_paths = True
-    url = "https://github.com/CMA-ES/libcmaes"
-    description = "libcmaes is a multithreaded C++11 library with Python bindings for high performance blackbox stochastic optimization using the CMA-ES algorithm for Covariance Matrix Adaptation Evolution Strategy"
-    license = "MIT"
+
+    # Optional metadata
+    license = "<Put the package license here>"
+    author = "<Put your name here> <And your email here>"
+    url = "<Package recipe repository url here, for issues about the package>"
+    description = "<Description of Cmaes here>"
+    topics = ("<Put some tag here>", "<here>", "<and here>")
+
+    # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
+    options = {"shared": [True, False], "fPIC": [True, False]}
+    default_options = {"shared": False, "fPIC": True}
 
-    requires = "eigen/3.4.0"
-    
-    generators = "CMakeDeps", "CMakeToolchain", "VirtualBuildEnv", "VirtualRunEnv"
-    apply_env = False
-    test_type = "explicit"
+    # Sources are located in the same place as this recipe, copy them to the recipe
+    exports_sources = "CMakeLists.txt", "cmake/*", "include/*", "libcmaes-config.cmake.in", "src/*", "libcmaes.pc.in"
 
-    def requirements(self):
-        self.requires(self.tested_reference_str)
-
-    scm = {
-        'type': 'git',
-        'url': 'auto',
-        'revision': 'auto',
-        'verify_ssl': False
-    }
+    def build_requirements(self):
+        self.build_requires("eigen/3.4.0",force_host_context=True)
 
     def set_version(self):
         content = load(os.path.join(self.recipe_folder, "CMakeLists.txt"))
@@ -52,29 +44,9 @@ class libcmaesConan(ConanFile):
             branch_name = git.get_branch()[:9]
             self.version = f"{extracted_version}-{branch_name}.{commit_hash}"
 
-    # Binary configuration
-    options = {
-        "shared": [True, False], 
-        "openmp": [True, False],
-        "surrog": [True, False]
-        }
-    default_options = {
-        "shared": True, 
-        "openmp": True,
-        "surrog": True
-        }
-
-    # Sources are located in the same place as this recipe, copy them to the recipe
-    def export_sources(self):
-        pass
-
     def config_options(self):
-        pass
-
-    def configure(self):
-        del self.settings.compiler.libcxx
-        if not self.settings.get_safe("compiler.version"):
-            del self.settings.compiler.version
+        if self.settings.os == "Windows":
+            del self.options.fPIC
 
     def layout(self):
         cmake_layout(self)
@@ -82,21 +54,16 @@ class libcmaesConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables['LIBCMAES_BUILD_EXAMPLES']=False
-        tc.variables['LIBCMAES_BUILD_SHARED_LIBS']= self.options.shared
-        tc.variables['LIBCMAES_USE_OPENMP'] = self.options.openmp
-        tc.variables['LIBCMAES_ENABLE_SURROG'] = self.options.surrog
         tc.generate()
-        
 
     def build(self):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
 
-    def package(self):    
+    def package(self):
         cmake = CMake(self)
         cmake.install()
 
     def package_info(self):
-        #self.cpp_info.libs = ["libcmaes"]
-        self.cpp_info.components["cmaes"].libs = ["libcmaes"]
+        self.cpp_info.libs = ["cmaes"]

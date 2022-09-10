@@ -5,7 +5,7 @@ from conan.tools.cmake import CMake, cmake_layout
 from conan.tools.build import cross_building
 
 
-class LibcmaesTestConan(ConanFile):
+class CmaesTestConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     # VirtualBuildEnv and VirtualRunEnv can be avoided if "tools.env.virtualenv:auto_use" is defined
     # (it will be defined in Conan 2.0)
