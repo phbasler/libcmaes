@@ -1,6 +1,8 @@
 #include <libcmaes/cmaes.h>   
 #include <iostream>
 
+using namespace libcmaes;
+
 FitFunc fsphere = [](const double *x, const int N)
 {
   double val = 0.0;
@@ -20,5 +22,5 @@ int main()
   CMASolutions cmasols = cmaes<>(fsphere,cmaparams);
   std::cout << "best solution: " << cmasols << std::endl;
   std::cout << "optimization took " << cmasols.elapsed_time() / 1000.0 << " seconds\n";
-  return cmasols.run_status();
+  return EXIT_SUCCESS;
 }

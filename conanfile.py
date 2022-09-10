@@ -8,6 +8,8 @@ from conans.tools import load
 class CmaesConan(ConanFile):
     name = "libcmaes"
 
+    generators = "CMakeDeps", "CMakeToolchain"
+
     # Optional metadata
     license = "<Put the package license here>"
     author = "<Put your name here> <And your email here>"
@@ -32,9 +34,12 @@ class CmaesConan(ConanFile):
     exports_sources = "CMakeLists.txt", "cmake/*", "include/*", "libcmaes-config.cmake.in", "src/*", "libcmaes.pc.in"
 
     def build_requirements(self):
-        self.build_requires("eigen/3.4.0",force_host_context=True)
+        pass
       #  if self.options.openmp:
       #      self.build_requires("llvm-openmp/12.0.1")
+
+    def requirements(self):
+        self.requires("eigen/3.4.0")
 
     def set_version(self):
         content = load(os.path.join(self.recipe_folder, "CMakeLists.txt"))
@@ -80,3 +85,4 @@ class CmaesConan(ConanFile):
 
     def package_info(self):
         self.cpp_info.components["cmaes"].libs = ["cmaes"]
+        self.cpp_info.components["cmaes"].requires = ["eigen::eigen"]
