@@ -17,14 +17,24 @@ class CmaesConan(ConanFile):
 
     # Binary configuration
     settings = "os", "compiler", "build_type", "arch"
-    options = {"shared": [True, False], "fPIC": [True, False]}
-    default_options = {"shared": False, "fPIC": True}
+    options = {
+        "shared": [True, False], 
+        "openmp": [True, False],
+        "surrog": [True, False]
+        }
+    default_options = {
+        "shared": True, 
+        "openmp": True,
+        "surrog": True
+        }
 
     # Sources are located in the same place as this recipe, copy them to the recipe
     exports_sources = "CMakeLists.txt", "cmake/*", "include/*", "libcmaes-config.cmake.in", "src/*", "libcmaes.pc.in"
 
     def build_requirements(self):
         self.build_requires("eigen/3.4.0",force_host_context=True)
+      #  if self.options.openmp:
+      #      self.build_requires("llvm-openmp/12.0.1")
 
     def set_version(self):
         content = load(os.path.join(self.recipe_folder, "CMakeLists.txt"))
@@ -54,6 +64,9 @@ class CmaesConan(ConanFile):
     def generate(self):
         tc = CMakeToolchain(self)
         tc.variables['LIBCMAES_BUILD_EXAMPLES']=False
+        tc.variables['LIBCMAES_BUILD_SHARED_LIBS']= self.options.shared
+        tc.variables['LIBCMAES_USE_OPENMP'] = self.options.openmp
+        tc.variables['LIBCMAES_ENABLE_SURROG'] = self.options.surrog
         tc.generate()
 
     def build(self):
@@ -66,4 +79,4 @@ class CmaesConan(ConanFile):
         cmake.install()
 
     def package_info(self):
-        self.cpp_info.libs = ["cmaes"]
+        self.cpp_info.components["cmaes"].libs = ["cmaes"]

@@ -4,4 +4,4 @@ project(PackageTest CXX)
 find_package(libcmaes CONFIG REQUIRED)
 
 add_executable(example src/example.cpp)
-target_link_libraries(example libcmaes::libcmaes)
+target_link_libraries(example libcmaes::cmaes)
