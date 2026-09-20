@@ -1,4 +1,4 @@
-²name: Run conan
+name: Run conan
 
 on:
   push:
