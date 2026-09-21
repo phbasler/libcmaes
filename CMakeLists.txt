@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 3.15)
 
-set(libcmaes_VERSION 0.10.3)
+set(libcmaes_VERSION 0.10.4)
 
 project (libcmaes
   VERSION ${libcmaes_VERSION}
